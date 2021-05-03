@@ -8,7 +8,7 @@ import * as firebase from "firebase";
 import GetRequest from "./GetRequest";
 import PostRequest from "./PostRequest";
 
-const Account = ({stateChanger, localUser, ChangeTextLoadingDialog, LoadingDialogController}) => {
+const Account = ({stateChanger, LocalUser, ChangeTextLoadingDialog, LoadingDialogController}) => {
 
 
     const firebaseConfig = {
@@ -29,12 +29,7 @@ const Account = ({stateChanger, localUser, ChangeTextLoadingDialog, LoadingDialo
     }
 
 
-    const LocalUser = {
-        login: 'Qqqqqq',
-        password: 'Qqqqqq1',
-        email: 'Qqqqqq@qq.qq',
-        code: 'xp2vc0',
-    }
+
     const [sendRequests, setSendRequests] = useState([])
     const [getRequests, setGetRequests] = useState([])
     const [friends, setFriends] = useState([])
@@ -68,6 +63,9 @@ const Account = ({stateChanger, localUser, ChangeTextLoadingDialog, LoadingDialo
     })
 
     useEffect(async () => {
+
+        ChangeTextLoadingDialog('Идет загрузка списка друзей, подождите пожалуйста...')
+        LoadingDialogController(true)
         await firebase.database().ref('Accounts/' + LocalUser.login + '/SendRequests').on('value', (snapshot) => {
             setSendRequests([])
             snapshot.forEach(function (request) {
@@ -86,6 +84,17 @@ const Account = ({stateChanger, localUser, ChangeTextLoadingDialog, LoadingDialo
             })
         });
 
+        await firebase.database().ref('Accounts/' + LocalUser.login + '/Friends').on('value', (snapshot) => {
+            setFriends([])
+            snapshot.forEach(function (request) {
+                firebase.storage().ref('ProfileImages/' + request.val()).getDownloadURL().then((uri) => {
+                    setFriends(prev => [...prev, {login: request, uri: uri}])
+                })
+            })
+            LoadingDialogController(false)
+        });
+
+
     }, [])
 
 
@@ -97,16 +106,24 @@ const Account = ({stateChanger, localUser, ChangeTextLoadingDialog, LoadingDialo
         let isFounded = false;
         ChangeTextLoadingDialog('Поиск профиля...')
         LoadingDialogController(true)
+
         await firebase.database().ref('Accounts/').once('value', (snapshot) => {
-            snapshot.forEach(function (childSnapshot) {
-                //console.log(childSnapshot.key);
-                //console.log(childSnapshot.val()['Auth']['code']);
+            snapshot.forEach(async function  (childSnapshot) {
+                if (friendCode===LocalUser.code)  return
                 if (friendCode === childSnapshot.val()['Auth']['code']) {
                     LoadingDialogController(false)
                     isFounded = true
-                    firebase.database().ref('Accounts/' + childSnapshot.key + '/GetRequests').push(LocalUser.login)
-                    firebase.database().ref('Accounts/' + LocalUser.login + '/SendRequests').push(childSnapshot.key)
-                    ToastAndroid.showWithGravity("Запрос успешно отправлен.", ToastAndroid.LONG, ToastAndroid.BOTTOM)
+                    await firebase.database().ref('Accounts/' + LocalUser.login + '/SendRequests').once('value',(snapshot=>{
+                        console.log(snapshot.exists())
+                        if (!snapshot.exists()){
+                            firebase.database().ref('Accounts/' + childSnapshot.key + '/GetRequests').push(LocalUser.login)
+                            firebase.database().ref('Accounts/' + LocalUser.login + '/SendRequests').push(childSnapshot.key)
+                            ToastAndroid.showWithGravity("Запрос успешно отправлен.", ToastAndroid.LONG, ToastAndroid.BOTTOM)
+                        }else{
+                            ToastAndroid.showWithGravity("Заявка уже существует.", ToastAndroid.LONG, ToastAndroid.BOTTOM)
+                        }
+                    }))
+
                 }
             });
         });
@@ -123,14 +140,16 @@ const Account = ({stateChanger, localUser, ChangeTextLoadingDialog, LoadingDialo
                 <ScrollView style={styles.scrollView}>
                     {sendRequests.length!=0 ? <View style={styles.NameHandler}><Text>Исходящие заявки</Text></View>:()=>{}}
                     {sendRequests && sendRequests.map((userData) => {
-                        return <PostRequest uri={userData['uri']} login={userData['login'].val()}/>
+                        return <PostRequest localUser={LocalUser} uri={userData['uri']} login={userData['login'].val()}/>
                     })}
-
                     {getRequests.length!=0 ? <View style={styles.NameHandler}><Text>Входящие заявки</Text></View>:()=>{}}
                     {getRequests && getRequests.map((userData) => {
                         return <GetRequest localUser={LocalUser} uri={userData['uri']}  login={userData['login'].val()}/>
                     })}
-
+                    {friends.length!=0 ? <View style={styles.NameHandler}><Text>Ваши друзья</Text></View>:()=>{}}
+                    {friends && friends.map((userData) => {
+                        return <UserHandler localUser={LocalUser} uri={userData['uri']}  login={userData['login'].val()}/>
+                    })}
 
 
                 </ScrollView>

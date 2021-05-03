@@ -1,12 +1,13 @@
 import React from 'react';
 import {Image, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
+import * as firebase from "firebase";
 
 const PostRequest = ({uri, login, localUser}) => {
 
 
     const styles = StyleSheet.create({
         Wrapper: {
-            width: '100%',
+            width: 260,
             height: 60,
             display: 'flex',
             alignItems: 'center',
@@ -55,12 +56,27 @@ const PostRequest = ({uri, login, localUser}) => {
     })
 
 
-    const removeCallBack = ()=>{
+    const removeCallBack = async () =>{
         console.log('----------------')
         console.log('local = ' +localUser['login'])
         console.log('current = '+login)
         console.log('remove')
         console.log('----------------')
+        await firebase.database().ref('Accounts/' + login+'/GetRequests').once('value', (snapshot) => {
+            snapshot.forEach((elem)=>{
+                if (elem.val()===localUser['login']){
+                    firebase.database().ref('Accounts/' + login + '/GetRequests/'+elem.key).remove()
+                }
+            })
+        });
+
+        await firebase.database().ref('Accounts/' + localUser['login']+'/SendRequests').once('value', (snapshot) => {
+            snapshot.forEach((elem)=>{
+                if (elem.val()===login){
+                    firebase.database().ref('Accounts/' + localUser['login'] + '/SendRequests/'+elem.key).remove()
+                }
+            })
+        });
 
     }
     return (

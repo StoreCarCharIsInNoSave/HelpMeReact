@@ -160,9 +160,6 @@ const Register = ({stateChanger, WaitDialogTextChanger, WaitDialogToggler, setLo
     });
 
 
-    /*    const [lengthState, setLengthState] = useState(false)
-        const [bigLetState, setBigLetState] = useState(false)
-        const [haveANumState, setHaveANumState] = useState(false)*/
 
 
     const ValidatePassword = (localPassword) => {

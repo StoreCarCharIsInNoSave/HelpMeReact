@@ -31,7 +31,7 @@ if (!firebase.apps.length) {
 
 export default function App() {
     //сердечко программы
-    const [FragmentController, ChangeFragmentState] = useState('Friends')
+    const [FragmentController, ChangeFragmentState] = useState('Logo')
     const [localUser, setLocalUser] = useState(null)
 
     const [loadingDialog, LoadingDialogController] = useState(false)
@@ -67,7 +67,7 @@ export default function App() {
             {FragmentController === 'Map' && <Map stateChanger={ChangeFragmentState}/>}
             {FragmentController === 'Map' && <BottomNavigator stateChanger={ChangeFragmentState} stateOfButtons={["default","active","default"]}/>}
 
-            {FragmentController === 'Friends' && <Friends stateChanger={ChangeFragmentState} ChangeTextLoadingDialog={ChangeTextLoadingDialog} LoadingDialogController={LoadingDialogController} localUser={localUser}/>}
+            {FragmentController === 'Friends' && <Friends stateChanger={ChangeFragmentState} ChangeTextLoadingDialog={ChangeTextLoadingDialog} LoadingDialogController={LoadingDialogController} LocalUser={localUser}/>}
             {FragmentController === 'Friends' && <BottomNavigator stateChanger={ChangeFragmentState} stateOfButtons={["default","default","active"]}/>}
 
 
