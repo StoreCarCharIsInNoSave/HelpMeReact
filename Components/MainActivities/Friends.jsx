@@ -62,11 +62,11 @@ const Account = ({stateChanger, LocalUser, ChangeTextLoadingDialog, LoadingDialo
         },
     })
 
-    useEffect(async () => {
+    useEffect( () => {
 
         ChangeTextLoadingDialog('Идет загрузка списка друзей, подождите пожалуйста...')
         LoadingDialogController(true)
-        await firebase.database().ref('Accounts/' + LocalUser.login + '/SendRequests').on('value', (snapshot) => {
+         firebase.database().ref('Accounts/' + LocalUser.login + '/SendRequests').on('value', (snapshot) => {
             setSendRequests([])
             snapshot.forEach(function (request) {
                 firebase.storage().ref('ProfileImages/' + request.val()).getDownloadURL().then((uri) => {
@@ -75,7 +75,7 @@ const Account = ({stateChanger, LocalUser, ChangeTextLoadingDialog, LoadingDialo
             })
         });
 
-        await firebase.database().ref('Accounts/' + LocalUser.login + '/GetRequests').on('value', (snapshot) => {
+         firebase.database().ref('Accounts/' + LocalUser.login + '/GetRequests').on('value', (snapshot) => {
             setGetRequests([])
             snapshot.forEach(function (request) {
                 firebase.storage().ref('ProfileImages/' + request.val()).getDownloadURL().then((uri) => {
@@ -84,7 +84,7 @@ const Account = ({stateChanger, LocalUser, ChangeTextLoadingDialog, LoadingDialo
             })
         });
 
-        await firebase.database().ref('Accounts/' + LocalUser.login + '/Friends').on('value', (snapshot) => {
+         firebase.database().ref('Accounts/' + LocalUser.login + '/Friends').on('value', (snapshot) => {
             setFriends([])
             snapshot.forEach(function (request) {
                 firebase.storage().ref('ProfileImages/' + request.val()).getDownloadURL().then((uri) => {
