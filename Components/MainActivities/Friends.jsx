@@ -29,7 +29,6 @@ const Account = ({stateChanger, LocalUser, ChangeTextLoadingDialog, LoadingDialo
     }
 
 
-
     const [sendRequests, setSendRequests] = useState([])
     const [getRequests, setGetRequests] = useState([])
     const [friends, setFriends] = useState([])
@@ -62,11 +61,11 @@ const Account = ({stateChanger, LocalUser, ChangeTextLoadingDialog, LoadingDialo
         },
     })
 
-    useEffect( () => {
+    useEffect(() => {
 
         ChangeTextLoadingDialog('Идет загрузка списка друзей, подождите пожалуйста...')
         LoadingDialogController(true)
-         firebase.database().ref('Accounts/' + LocalUser.login + '/SendRequests').on('value', (snapshot) => {
+        firebase.database().ref('Accounts/' + LocalUser.login + '/SendRequests').on('value', (snapshot) => {
             setSendRequests([])
             snapshot.forEach(function (request) {
                 firebase.storage().ref('ProfileImages/' + request.val()).getDownloadURL().then((uri) => {
@@ -75,7 +74,7 @@ const Account = ({stateChanger, LocalUser, ChangeTextLoadingDialog, LoadingDialo
             })
         });
 
-         firebase.database().ref('Accounts/' + LocalUser.login + '/GetRequests').on('value', (snapshot) => {
+        firebase.database().ref('Accounts/' + LocalUser.login + '/GetRequests').on('value', (snapshot) => {
             setGetRequests([])
             snapshot.forEach(function (request) {
                 firebase.storage().ref('ProfileImages/' + request.val()).getDownloadURL().then((uri) => {
@@ -84,7 +83,7 @@ const Account = ({stateChanger, LocalUser, ChangeTextLoadingDialog, LoadingDialo
             })
         });
 
-         firebase.database().ref('Accounts/' + LocalUser.login + '/Friends').on('value', (snapshot) => {
+        firebase.database().ref('Accounts/' + LocalUser.login + '/Friends').on('value', (snapshot) => {
             setFriends([])
             snapshot.forEach(function (request) {
                 firebase.storage().ref('ProfileImages/' + request.val()).getDownloadURL().then((uri) => {
@@ -103,34 +102,40 @@ const Account = ({stateChanger, LocalUser, ChangeTextLoadingDialog, LoadingDialo
     }
 
     const onSearch = async () => {
-        let isFounded = false;
-        ChangeTextLoadingDialog('Поиск профиля...')
-        LoadingDialogController(true)
-
-        await firebase.database().ref('Accounts/').once('value', (snapshot) => {
-            snapshot.forEach(async function  (childSnapshot) {
-                if (friendCode===LocalUser.code)  return
-                if (friendCode === childSnapshot.val()['Auth']['code']) {
-                    LoadingDialogController(false)
-                    isFounded = true
-                    await firebase.database().ref('Accounts/' + LocalUser.login + '/SendRequests').once('value',(snapshot=>{
-                        console.log(snapshot.exists())
-                        if (!snapshot.exists()){
-                            firebase.database().ref('Accounts/' + childSnapshot.key + '/GetRequests').push(LocalUser.login)
-                            firebase.database().ref('Accounts/' + LocalUser.login + '/SendRequests').push(childSnapshot.key)
-                            ToastAndroid.showWithGravity("Запрос успешно отправлен.", ToastAndroid.LONG, ToastAndroid.BOTTOM)
-                        }else{
-                            ToastAndroid.showWithGravity("Заявка уже существует.", ToastAndroid.LONG, ToastAndroid.BOTTOM)
-                        }
-                    }))
-
-                }
-            });
-        });
-        if (!isFounded) {
-            LoadingDialogController(false)
-            ToastAndroid.showWithGravity("Пользователь не найден.", ToastAndroid.LONG, ToastAndroid.BOTTOM)
+        let foundedAccount = null
+        if (friendCode === LocalUser['code']) {
+            ToastAndroid.showWithGravity('Невозможно добавить себя в друзья', ToastAndroid.LONG, ToastAndroid.BOTTOM)
+            return
         }
+        firebase.database().ref('Accounts/').once('value', (snapshot) => {
+            for (let some in snapshot.key){
+                console.log(some)
+                console.log(15)
+            }
+            snapshot.forEach((account) => {
+                if (account.val()['Auth']['code'] === friendCode) {
+                    console.log('Аккаунт найден')
+                    firebase.database().ref('Accounts/' + LocalUser['login'] + '/SendRequests/').once('value', (snapshot) => {
+                        let isExist = false;
+                        snapshot.forEach((request) => {
+                            if (request.val() === account.val()['Auth']['login']) {
+                                isExist = true;
+                            }
+                        })
+                        if (!isExist) {
+                            foundedAccount = account
+                        }
+                    })
+                }
+            })
+            if (!foundedAccount) {
+                ToastAndroid.showWithGravity('Невозможно добавить аккаунт', ToastAndroid.LONG, ToastAndroid.BOTTOM)
+                return
+            } else {
+                firebase.database().ref('Accounts/' + LocalUser['login'] + '/SendRequests/').push(foundedAccount.val()['Auth']['login'])
+                firebase.database().ref('Accounts/' + foundedAccount.val()['Auth']['login'] + '/GetRequests/').push(LocalUser['login'])
+            }
+        });
     }
     return (
         <View style={styles.Wrapper}>
@@ -138,17 +143,24 @@ const Account = ({stateChanger, LocalUser, ChangeTextLoadingDialog, LoadingDialo
                 <SearchBar onSearch={onSearch} onChangeSetCallback={onChange}/>
 
                 <ScrollView style={styles.scrollView}>
-                    {sendRequests.length!=0 ? <View style={styles.NameHandler}><Text>Исходящие заявки</Text></View>:()=>{}}
+                    {sendRequests.length != 0 ?
+                        <View style={styles.NameHandler}><Text>Исходящие заявки</Text></View> : () => {
+                        }}
                     {sendRequests && sendRequests.map((userData) => {
-                        return <PostRequest localUser={LocalUser} uri={userData['uri']} login={userData['login'].val()}/>
+                        return <PostRequest localUser={LocalUser} uri={userData['uri']}
+                                            login={userData['login'].val()}/>
                     })}
-                    {getRequests.length!=0 ? <View style={styles.NameHandler}><Text>Входящие заявки</Text></View>:()=>{}}
+                    {getRequests.length != 0 ?
+                        <View style={styles.NameHandler}><Text>Входящие заявки</Text></View> : () => {
+                        }}
                     {getRequests && getRequests.map((userData) => {
-                        return <GetRequest localUser={LocalUser} uri={userData['uri']}  login={userData['login'].val()}/>
+                        return <GetRequest localUser={LocalUser} uri={userData['uri']} login={userData['login'].val()}/>
                     })}
-                    {friends.length!=0 ? <View style={styles.NameHandler}><Text>Ваши друзья</Text></View>:()=>{}}
+                    {friends.length != 0 ? <View style={styles.NameHandler}><Text>Ваши друзья</Text></View> : () => {
+                    }}
                     {friends && friends.map((userData) => {
-                        return <UserHandler localUser={LocalUser} uri={userData['uri']}  login={userData['login'].val()}/>
+                        return <UserHandler localUser={LocalUser} uri={userData['uri']}
+                                            login={userData['login'].val()}/>
                     })}
 
 
