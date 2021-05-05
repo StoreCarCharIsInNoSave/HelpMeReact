@@ -31,7 +31,7 @@ if (!firebase.apps.length) {
 
 export default function App() {
     //сердечко программы
-    const [FragmentController, ChangeFragmentState] = useState('Logo')
+    const [FragmentController, ChangeFragmentState] = useState('Map')
     const [localUser, setLocalUser] = useState(null)
 
     const [loadingDialog, LoadingDialogController] = useState(false)

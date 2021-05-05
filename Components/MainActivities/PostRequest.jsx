@@ -57,11 +57,7 @@ const PostRequest = ({uri, login, localUser}) => {
 
 
     const removeCallBack = async () =>{
-        console.log('----------------')
-        console.log('local = ' +localUser['login'])
-        console.log('current = '+login)
-        console.log('remove')
-        console.log('----------------')
+
         await firebase.database().ref('Accounts/' + login+'/GetRequests').once('value', (snapshot) => {
             snapshot.forEach((elem)=>{
                 if (elem.val()===localUser['login']){
