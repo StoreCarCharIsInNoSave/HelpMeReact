@@ -1,15 +1,17 @@
-import React, {useState} from 'react';
-import {Dimensions,Image,  ImageBackground, StyleSheet, Text, View} from "react-native";
+import React, {useEffect, useState} from 'react';
+import {Dimensions, Image, ImageBackground, StyleSheet, Text, ToastAndroid, TouchableOpacity, View} from "react-native";
 import BottomNavigator from "../NavigatorMenu/BottomNavigator";
 import MapView, {Callout, Circle, Marker} from "react-native-maps";
-import CustomMarker from "../OtherComponents/CustomMarker";
+import * as ELocation from 'expo-location';
+import {Toast} from "native-base";
 
-const Map = ({stateChanger}) => {
+
+const Map = ({stateChanger, LocalUser, WaitDialogToggler, WaitDialogTextChanger}) => {
+
     const styles = StyleSheet.create({
         Wrapper: {
             width: '100%',
             height: '100%',
-            backgroundColor: 'green',
         },
 
         map: {
@@ -23,27 +25,83 @@ const Map = ({stateChanger}) => {
         },
         wrap: {
             backgroundColor: 'transparent',
+
+        },
+        callout: {
+            height: 100,
+            width: 100,
+            backgroundColor: 'red',
+        },
+        helpWrap: {
+            borderRadius: 50,
+            borderWidth: 2,
+            borderColor: 'black',
+            borderStyle: 'solid',
+            width: 50,
+            height: 50,
+            padding: 30,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            position: 'absolute',
+            bottom: 110,
+            right: 30,
+        },
+        help: {
+            width: 50,
+            height: 50,
+        },
+        myMarker:{
+            width:100,
+            height:100,
         },
     })
+    const [location, setLocation] = useState(null);
+    const [lat, setLatitude] = useState(null);
+    const [long, setLongitude] = useState(null);
+    useEffect(() => {
+        (async () => {
+            let {status} = await ELocation.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                ToastAndroid.showWithGravity("Ошибка, неполучилось получить ваше местоположение", ToastAndroid.LONG, ToastAndroid.BOTTOM)
+                stateChanger('Account')
+                return;
+            }
+            WaitDialogTextChanger('Получение местоположения, подождите пожалуйста')
+            WaitDialogToggler(true)
+            let location = await ELocation.getCurrentPositionAsync({});
+            setLocation(location);
+            WaitDialogToggler(false)
+            setLongitude(location['coords']['longitude'])
+            setLatitude(location['coords']['latitude'])
 
+
+        })();
+    }, []);
+
+    useEffect(()=>{
+
+
+    },[])
 
     return (
         <View style={styles.Wrapper}>
 
             <MapView style={styles.map}
                      initialRegion={{
-                         latitude: 37.78825,
-                         longitude: -122.4324,
-                         latitudeDelta: 0.001,
-                         longitudeDelta: 0.001,
+                         latitude: lat,
+                         longitude: long,
+                         latitudeDelta: 0.01,
+                         longitudeDelta: 0.01,
                      }}>
-                <CustomMarker coordinate={{latitude: 37.78825, longitude: -122.4324}} login="Zxczxc"/>
-
-
-
-
+                {lat ? <Marker style={styles.myMarker}  coordinate={{latitude: lat, longitude: long}} image={require('../../R/Images/myloc.png')}/> : ()=>{}}
             </MapView>
 
+            <TouchableOpacity onPress={() => {
+                stateChanger('SendHelp')
+            }} style={styles.helpWrap}>
+                <Image style={styles.help} source={require('../../R/Images/help.png')}></Image>
+            </TouchableOpacity>
         </View>
     );
 };

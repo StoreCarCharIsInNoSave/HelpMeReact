@@ -9,6 +9,7 @@ import Map from "./Components/MainActivities/Map";
 import Friends from "./Components/MainActivities/Friends";
 import * as firebase from "firebase";
 import WaitDialog from "./Components/OtherComponents/WaitDialog";
+import SendHelpActivity from "./Components/MainActivities/SendHelpActivity";
 
 
 const firebaseConfig = {
@@ -31,8 +32,16 @@ if (!firebase.apps.length) {
 
 export default function App() {
     //сердечко программы
+
     const [FragmentController, ChangeFragmentState] = useState('Map')
     const [localUser, setLocalUser] = useState(null)
+
+useEffect(()=>{
+    setLocalUser({login: 'Qqqqqq',
+        password: 'Qqqqqq1',
+        email: 'Qqqqqq@qq.qq',
+        code: '96l8vl',})
+},[])
 
     const [loadingDialog, LoadingDialogController] = useState(false)
 
@@ -64,12 +73,13 @@ export default function App() {
             {FragmentController === 'Account' && <Account LocalUser={localUser} stateChanger={ChangeFragmentState} ChangeTextLoadingDialog={ChangeTextLoadingDialog} LoadingDialogController={LoadingDialogController} />}
             {FragmentController === 'Account' && <BottomNavigator stateChanger={ChangeFragmentState} stateOfButtons={["active","default","default"]}/>}
 
-            {FragmentController === 'Map' && <Map stateChanger={ChangeFragmentState}/>}
+            {FragmentController === 'Map' && <Map stateChanger={ChangeFragmentState} WaitDialogToggler={LoadingDialogController} WaitDialogTextChanger={ChangeTextLoadingDialog}/>}
             {FragmentController === 'Map' && <BottomNavigator stateChanger={ChangeFragmentState} stateOfButtons={["default","active","default"]}/>}
 
             {FragmentController === 'Friends' && <Friends stateChanger={ChangeFragmentState} ChangeTextLoadingDialog={ChangeTextLoadingDialog} LoadingDialogController={LoadingDialogController} LocalUser={localUser}/>}
             {FragmentController === 'Friends' && <BottomNavigator stateChanger={ChangeFragmentState} stateOfButtons={["default","default","active"]}/>}
 
+            {FragmentController === 'SendHelp' && <SendHelpActivity stateChanger={ChangeFragmentState} LocalUser={localUser} ChangeTextLoadingDialog={ChangeTextLoadingDialog} LoadingDialogController={LoadingDialogController} />}
 
 
 
