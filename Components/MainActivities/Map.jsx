@@ -4,9 +4,12 @@ import BottomNavigator from "../NavigatorMenu/BottomNavigator";
 import MapView, {Callout, Circle, Marker} from "react-native-maps";
 import * as ELocation from 'expo-location';
 import {Toast} from "native-base";
+import * as firebase from "firebase";
+import GetRequest from "./GetRequest";
 
 
 const Map = ({stateChanger, LocalUser, WaitDialogToggler, WaitDialogTextChanger}) => {
+
 
     const styles = StyleSheet.create({
         Wrapper: {
@@ -51,9 +54,9 @@ const Map = ({stateChanger, LocalUser, WaitDialogToggler, WaitDialogTextChanger}
             width: 50,
             height: 50,
         },
-        myMarker:{
-            width:100,
-            height:100,
+        myMarker: {
+            width: 100,
+            height: 100,
         },
     })
     const [location, setLocation] = useState(null);
@@ -78,11 +81,23 @@ const Map = ({stateChanger, LocalUser, WaitDialogToggler, WaitDialogTextChanger}
 
         })();
     }, []);
+    const [requests, SetRequests] = useState([])
 
-    useEffect(()=>{
+    useEffect(() => {
+        (async () => {
+                await firebase.database().ref('Accounts/').on('value', (snapshot) => {
+                    SetRequests([])
+                    snapshot.forEach((elem)=>{
+                        if (elem.val()['Request']!=undefined){
+                            if (elem.key!=LocalUser['login']){
+                                SetRequests(prev=>[...prev,elem.val()['Request']])
+                            }
+                        }
+                    })
+                });
+        })();
+    }, []);
 
-
-    },[])
 
     return (
         <View style={styles.Wrapper}>
@@ -94,7 +109,14 @@ const Map = ({stateChanger, LocalUser, WaitDialogToggler, WaitDialogTextChanger}
                          latitudeDelta: 0.01,
                          longitudeDelta: 0.01,
                      }}>
-                {lat ? <Marker style={styles.myMarker}  coordinate={{latitude: lat, longitude: long}} image={require('../../R/Images/myloc.png')}/> : ()=>{}}
+                {lat ? <Marker style={styles.myMarker} coordinate={{latitude: lat, longitude: long}}
+                               image={require('../../R/Images/myloc.png')}/> : () => {
+                }}
+
+                {requests && requests.map((request) => {
+                    return  <Marker coordinate={{latitude:request['latitude'], longitude:request['longitude']}}/>
+                })}
+
             </MapView>
 
             <TouchableOpacity onPress={() => {

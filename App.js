@@ -33,15 +33,10 @@ if (!firebase.apps.length) {
 export default function App() {
     //сердечко программы
 
-    const [FragmentController, ChangeFragmentState] = useState('Map')
+    const [FragmentController, ChangeFragmentState] = useState('Logo')
     const [localUser, setLocalUser] = useState(null)
 
-useEffect(()=>{
-    setLocalUser({login: 'Qqqqqq',
-        password: 'Qqqqqq1',
-        email: 'Qqqqqq@qq.qq',
-        code: '96l8vl',})
-},[])
+
 
     const [loadingDialog, LoadingDialogController] = useState(false)
 
@@ -73,7 +68,7 @@ useEffect(()=>{
             {FragmentController === 'Account' && <Account LocalUser={localUser} stateChanger={ChangeFragmentState} ChangeTextLoadingDialog={ChangeTextLoadingDialog} LoadingDialogController={LoadingDialogController} />}
             {FragmentController === 'Account' && <BottomNavigator stateChanger={ChangeFragmentState} stateOfButtons={["active","default","default"]}/>}
 
-            {FragmentController === 'Map' && <Map stateChanger={ChangeFragmentState} WaitDialogToggler={LoadingDialogController} WaitDialogTextChanger={ChangeTextLoadingDialog}/>}
+            {FragmentController === 'Map' && <Map LocalUser={localUser} stateChanger={ChangeFragmentState} WaitDialogToggler={LoadingDialogController} WaitDialogTextChanger={ChangeTextLoadingDialog}/>}
             {FragmentController === 'Map' && <BottomNavigator stateChanger={ChangeFragmentState} stateOfButtons={["default","active","default"]}/>}
 
             {FragmentController === 'Friends' && <Friends stateChanger={ChangeFragmentState} ChangeTextLoadingDialog={ChangeTextLoadingDialog} LoadingDialogController={LoadingDialogController} LocalUser={localUser}/>}
