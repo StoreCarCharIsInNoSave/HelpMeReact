@@ -2,7 +2,7 @@ import React from 'react';
 import {Button, StyleSheet, Text, TouchableOpacity} from "react-native";
 import {Touchable} from "react-native-web";
 
-const ButtonStylized = ({title,callback,bgColor, height, textColor, width}) => {
+const ButtonStylized = ({title,callback,bgColor, height, textColor, width, marginTop}) => {
 
     const styles = StyleSheet.create({
         opacity:{
@@ -12,6 +12,7 @@ const ButtonStylized = ({title,callback,bgColor, height, textColor, width}) => {
             borderRadius : 30,
             height: height,
             width:width,
+            marginTop:marginTop,
         },
     });
     return (

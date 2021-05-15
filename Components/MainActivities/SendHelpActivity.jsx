@@ -97,6 +97,7 @@ const SendHelpActivity = ({LocalUser, stateChanger, ChangeTextLoadingDialog, Loa
                 level: value,
                 latitude: lat,
                 longitude: long,
+                login:LocalUser['login'],
             })
             ToastAndroid.showWithGravity("Заявка успешно создана!", ToastAndroid.LONG, ToastAndroid.BOTTOM)
             stateChanger('Map')

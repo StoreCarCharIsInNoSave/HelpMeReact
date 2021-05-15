@@ -6,9 +6,10 @@ import * as ELocation from 'expo-location';
 import {Toast} from "native-base";
 import * as firebase from "firebase";
 import GetRequest from "./GetRequest";
+import CustomMarker from "./CustomMarker";
 
 
-const Map = ({stateChanger, LocalUser, WaitDialogToggler, WaitDialogTextChanger}) => {
+const Map = ({setRequest, stateChanger, LocalUser, WaitDialogToggler, WaitDialogTextChanger}) => {
 
 
     const styles = StyleSheet.create({
@@ -99,6 +100,7 @@ const Map = ({stateChanger, LocalUser, WaitDialogToggler, WaitDialogTextChanger}
     }, []);
 
 
+
     return (
         <View style={styles.Wrapper}>
 
@@ -114,7 +116,7 @@ const Map = ({stateChanger, LocalUser, WaitDialogToggler, WaitDialogTextChanger}
                 }}
 
                 {requests && requests.map((request) => {
-                    return  <Marker coordinate={{latitude:request['latitude'], longitude:request['longitude']}}/>
+                    return  <CustomMarker setRequest={setRequest} request={request} LocalUser={LocalUser} stateChanger={stateChanger}/>
                 })}
 
             </MapView>
