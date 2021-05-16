@@ -118,6 +118,7 @@ const Register = ({stateChanger, WaitDialogTextChanger, WaitDialogToggler, setLo
                     password: password,
                     email: email,
                     code: code,
+                    sessions:0,
                 })
                 stateChanger('Account')
             }

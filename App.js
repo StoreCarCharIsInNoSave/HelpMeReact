@@ -11,6 +11,7 @@ import * as firebase from "firebase";
 import WaitDialog from "./Components/OtherComponents/WaitDialog";
 import SendHelpActivity from "./Components/MainActivities/SendHelpActivity";
 import AnchoringActivity from "./Components/MainActivities/anchoringActivity";
+import GettingHelpActivity from "./Components/MainActivities/GettingHelpActivity";
 
 
 const firebaseConfig = {
@@ -47,7 +48,8 @@ export default function App() {
     useEffect(() => {
         if (FragmentController === 'Logo') {
 
-             firebase.database().ref('Accounts/').once('value', (snapshot) => {});
+            firebase.database().ref('Accounts/').once('value', (snapshot) => {
+            });
 
             setTimeout(() => {
                 ChangeFragmentState('Register')
@@ -61,30 +63,47 @@ export default function App() {
             <StatusBar style="auto"/>
 
             {FragmentController === 'Logo' && <Image style={styles.Logo} source={require('./R/Images/Logo.png')}/>}
-            {FragmentController === 'Register' && <Register setLocalUser={setLocalUser} stateChanger={ChangeFragmentState} WaitDialogToggler={LoadingDialogController} WaitDialogTextChanger={ChangeTextLoadingDialog}/>}
+            {FragmentController === 'Register' &&
+            <Register setLocalUser={setLocalUser} stateChanger={ChangeFragmentState}
+                      WaitDialogToggler={LoadingDialogController} WaitDialogTextChanger={ChangeTextLoadingDialog}/>}
             {FragmentController === 'Login' && <Auth setLocalUser={setLocalUser} stateChanger={ChangeFragmentState}/>}
 
-            {FragmentController === 'Navigator' && <BottomNavigator stateChanger={ChangeFragmentState} stateOfButtons={["default","default","default"]}/>}
+            {FragmentController === 'Navigator' &&
+            <BottomNavigator stateChanger={ChangeFragmentState} stateOfButtons={["default", "default", "default"]}/>}
 
 
-            {FragmentController === 'Account' && <Account LocalUser={localUser} stateChanger={ChangeFragmentState} ChangeTextLoadingDialog={ChangeTextLoadingDialog} LoadingDialogController={LoadingDialogController} />}
-            {FragmentController === 'Account' && <BottomNavigator stateChanger={ChangeFragmentState} stateOfButtons={["active","default","default"]}/>}
+            {FragmentController === 'Account' && <Account LocalUser={localUser} stateChanger={ChangeFragmentState}
+                                                          ChangeTextLoadingDialog={ChangeTextLoadingDialog}
+                                                          LoadingDialogController={LoadingDialogController}/>}
+            {FragmentController === 'Account' &&
+            <BottomNavigator stateChanger={ChangeFragmentState} stateOfButtons={["active", "default", "default"]}/>}
 
-            {FragmentController === 'Map' && <Map setRequest={setRequest} LocalUser={localUser} stateChanger={ChangeFragmentState} WaitDialogToggler={LoadingDialogController} WaitDialogTextChanger={ChangeTextLoadingDialog}/>}
-            {FragmentController === 'Map' && <BottomNavigator stateChanger={ChangeFragmentState} stateOfButtons={["default","active","default"]}/>}
+            {FragmentController === 'Map' &&
+            <Map setRequest={setRequest} LocalUser={localUser} stateChanger={ChangeFragmentState}
+                 WaitDialogToggler={LoadingDialogController} WaitDialogTextChanger={ChangeTextLoadingDialog}/>}
+            {FragmentController === 'Map' &&
+            <BottomNavigator stateChanger={ChangeFragmentState} stateOfButtons={["default", "active", "default"]}/>}
 
-            {FragmentController === 'Friends' && <Friends stateChanger={ChangeFragmentState} ChangeTextLoadingDialog={ChangeTextLoadingDialog} LoadingDialogController={LoadingDialogController} LocalUser={localUser}/>}
-            {FragmentController === 'Friends' && <BottomNavigator stateChanger={ChangeFragmentState} stateOfButtons={["default","default","active"]}/>}
+            {FragmentController === 'Friends' &&
+            <Friends stateChanger={ChangeFragmentState} ChangeTextLoadingDialog={ChangeTextLoadingDialog}
+                     LoadingDialogController={LoadingDialogController} LocalUser={localUser}/>}
+            {FragmentController === 'Friends' &&
+            <BottomNavigator stateChanger={ChangeFragmentState} stateOfButtons={["default", "default", "active"]}/>}
 
-            {FragmentController === 'SendHelp' && <SendHelpActivity stateChanger={ChangeFragmentState} LocalUser={localUser} ChangeTextLoadingDialog={ChangeTextLoadingDialog} LoadingDialogController={LoadingDialogController} />}
+            {FragmentController === 'SendHelp' &&
+            <SendHelpActivity stateChanger={ChangeFragmentState} LocalUser={localUser}
+                              ChangeTextLoadingDialog={ChangeTextLoadingDialog}
+                              LoadingDialogController={LoadingDialogController}/>}
 
-            {FragmentController === 'Anchoring' && <AnchoringActivity setRequest={setRequest} request={request} stateChanger={ChangeFragmentState} LocalUser={localUser} ChangeTextLoadingDialog={ChangeTextLoadingDialog} LoadingDialogController={LoadingDialogController} />}
+            {FragmentController === 'Anchoring' &&
+            <AnchoringActivity setRequest={setRequest} request={request} stateChanger={ChangeFragmentState}
+                               LocalUser={localUser} ChangeTextLoadingDialog={ChangeTextLoadingDialog}
+                               LoadingDialogController={LoadingDialogController}/>}
 
-
-
-
-
-
+            {FragmentController === 'GettingHelp' &&
+            <GettingHelpActivity stateChanger={ChangeFragmentState} LocalUser={localUser}
+                                 ChangeTextLoadingDialog={ChangeTextLoadingDialog}
+                                 LoadingDialogController={LoadingDialogController}/>}
 
 
             {loadingDialog === true && <WaitDialog text={textLoadingDialog}/>}

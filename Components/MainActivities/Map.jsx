@@ -100,6 +100,18 @@ const Map = ({setRequest, stateChanger, LocalUser, WaitDialogToggler, WaitDialog
     }, []);
 
 
+    useEffect(() => {
+        (async () => {
+            await firebase.database().ref('Accounts/'+LocalUser.login+'/Request').on('value', (snapshot) => {
+              if (snapshot){
+                  if (snapshot.val()['status']!='unbusy'){
+                      stateChanger('GettingHelp')
+                  }
+              }
+            });
+        })();
+    }, []);
+
 
     return (
         <View style={styles.Wrapper}>
