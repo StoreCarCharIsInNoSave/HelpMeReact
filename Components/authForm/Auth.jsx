@@ -46,26 +46,32 @@ const Register = ({stateChanger, setLocalUser}) => {
     const [login, setLogin] = useState('')
     const [password, setPassword] = useState('')
     const LoginWithLoginAndPassword = async () => {
-        let accountSnap;
-        await firebase.database().ref('Accounts/' + login).once('value', (snapshot) => {
-            accountSnap = snapshot.val()
-        });
-        if (accountSnap) {
-            if (password === accountSnap['Auth']['password']) {
-                setLocalUser({
-                    login: login,
-                    password: password,
-                    email: accountSnap['Auth']['email'],
-                    code: accountSnap['Auth']['code'],
-                })
-                stateChanger('Account')
+        if (!!login.trim()){
+            let accountSnap;
+            await firebase.database().ref('Accounts/' + login).once('value', (snapshot) => {
+                accountSnap = snapshot.val()
+            });
+            if (accountSnap) {
+                if (password === accountSnap['Auth']['password']) {
+                    setLocalUser({
+                        login: login,
+                        password: password,
+                        email: accountSnap['Auth']['email'],
+                        code: accountSnap['Auth']['code'],
+                    })
+                    stateChanger('Account')
+                } else {
+                    alert("Ошибка, проверьте верность введенных данных!")
+                    console.log(accountSnap['Auth']['password']);
+                }
             } else {
                 alert("Ошибка, проверьте верность введенных данных!")
-                console.log(accountSnap['Auth']['password']);
             }
-        } else {
+        }else{
             alert("Ошибка, проверьте верность введенных данных!")
+
         }
+
     }
 
 

@@ -21,7 +21,6 @@ const GettingHelpActivity = ({
             firebase.database().ref('Accounts/' + LocalUser['login'] + '/Request').once('value', (snapshot) => {
                 firebase.database().ref('Accounts/' + snapshot.val()['status'] + '/Auth').once('value', (sn) => {
                     SetHelpUser(sn.val())
-
                     firebase.storage().ref('ProfileImages/' + sn.val()['login']).getDownloadURL().then((url) => {
                         SetImage(url)
                         LoadingDialogController(false)
@@ -155,13 +154,17 @@ const GettingHelpActivity = ({
                     <View style={styles.line}>
                         <ButtonStylized width={100} height={50} bgColor={'#ff0000'} marginTop={10} textColor={'white'}
                                         title={'Отменить'} callback={() => {
-
+                            firebase.database().ref('Accounts/' +LocalUser['login']+'/Request').update({status:'unbusy'})
+                            ToastAndroid.showWithGravity("Вы успешно отменили данный сеанс", ToastAndroid.LONG, ToastAndroid.BOTTOM)
+                            stateChanger('Map')
 
                         }}></ButtonStylized>
                         <ButtonStylized width={100} height={50} bgColor={'#60ff00'} marginTop={10} textColor={'black'}
                                         title={'Завершить'} callback={() => {
-
-
+                            stateChanger('Map')
+                            ToastAndroid.showWithGravity("Сеанс успешно завершен", ToastAndroid.LONG, ToastAndroid.BOTTOM)
+                            firebase.database().ref('Accounts/' +helpUser['login']+'/Auth').update({sessions:helpUser['sessions']+1})
+                            firebase.database().ref('Accounts/' +LocalUser['login']+'/Request').set({})
                         }}></ButtonStylized>
                     </View>
 
