@@ -24,7 +24,13 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "some.some.some"
+      "package": "some.some.some",
+
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyAt_4OPqenXFKfMMhF66Y8TqqTw3FJzzaI"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
