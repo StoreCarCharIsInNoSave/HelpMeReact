@@ -35,7 +35,8 @@
     "react-native-svg": "12.1.0",
     "react-native-svg-uri": "^1.2.3",
     "react-native-web": "^0.16.1",
-    "react-native-webview": "^11.4.4"
+    "react-native-webview": "^11.4.4",
+    "yet": "^0.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0"

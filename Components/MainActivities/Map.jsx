@@ -112,26 +112,29 @@ const Map = ({setRequest, stateChanger, LocalUser, WaitDialogToggler, WaitDialog
         })();
     }, []);
 
-
-    return (
-        <View style={styles.Wrapper}>
-
-            <MapView style={styles.map}
+const RenderMap = ()=>{
+    return  <MapView key={Math.random() * (100000 - 100) + 100} style={styles.map}
                      initialRegion={{
                          latitude: lat,
                          longitude: long,
                          latitudeDelta: 0.01,
                          longitudeDelta: 0.01,
                      }}>
-                {lat ? <Marker style={styles.myMarker} coordinate={{latitude: lat, longitude: long}}
-                               image={require('../../R/Images/myloc.png')}/> : () => {
-                }}
+        {lat ? <Marker style={styles.myMarker} coordinate={{latitude: lat, longitude: long}}
+                       image={require('../../R/Images/myloc.png')}/> : () => {
+        }}
 
-                {requests && requests.map((request) => {
-                    return  <CustomMarker setRequest={setRequest} request={request} LocalUser={LocalUser} stateChanger={stateChanger}/>
-                })}
+        {requests && requests.map((request) => {
+            return  <CustomMarker setRequest={setRequest} request={request} LocalUser={LocalUser} stateChanger={stateChanger}/>
+        })}
 
-            </MapView>
+    </MapView>
+}
+    return (
+        <View style={styles.Wrapper}>
+
+            {long!=null && lat!=null && RenderMap()}
+
 
             <TouchableOpacity onPress={() => {
                 stateChanger('SendHelp')

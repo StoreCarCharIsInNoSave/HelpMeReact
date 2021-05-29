@@ -52,7 +52,7 @@ export default function App() {
             });
 
             setTimeout(() => {
-                ChangeFragmentState('Register')
+                ChangeFragmentState('Login')
             }, 5000)
         }
     })
