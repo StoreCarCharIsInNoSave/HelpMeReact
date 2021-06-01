@@ -107,7 +107,7 @@ const Register = ({stateChanger, WaitDialogTextChanger, WaitDialogToggler, setLo
                 WaitDialogTextChanger('Запущен процесс регистрации, подождите немного...')
                 WaitDialogToggler(true)
                 let code = generateString(6)
-                await firebase.database().ref('Accounts/' + login + '/Auth').set({email, login, password, code})
+                await firebase.database().ref('Accounts/' + login + '/Auth').set({email, login, password, code, sessions:0})
                 const response = await fetch(profileImageUri)
                 const blob = await response.blob()
                 let ref = firebase.storage().ref().child('ProfileImages/' + login)

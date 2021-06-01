@@ -58,6 +58,7 @@ const Register = ({stateChanger, setLocalUser}) => {
                         password: password,
                         email: accountSnap['Auth']['email'],
                         code: accountSnap['Auth']['code'],
+                        sessions:accountSnap['Auth']['sessions']
                     })
                     stateChanger('Account')
                 } else {
