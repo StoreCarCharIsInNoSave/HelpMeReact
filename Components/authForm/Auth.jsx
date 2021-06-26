@@ -85,7 +85,7 @@ const Register = ({stateChanger, setLocalUser}) => {
             <LabeledEdit isPassword={true} onChangeSetCallback={setPassword} lableText='Пароль: '/>
             <ButtonStylized title='Войти' height={50} textColor={'white'} bgColor={'#118ece'}
                             callback={LoginWithLoginAndPassword}/>
-            <ButtonStylized title='Нет аккаунта? зарегестрируйтесь!' textColor={'#000000'} callback={() => stateChanger('Register')}/>
+            <ButtonStylized title='Нет аккаунта? Зарегистрируйтесь!' textColor={'#000000'} callback={() => stateChanger('Register')}/>
         </View>
     );
 };

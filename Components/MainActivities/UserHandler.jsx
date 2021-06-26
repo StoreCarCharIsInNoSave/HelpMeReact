@@ -100,9 +100,11 @@ const UserHandler = ({uri, login, localUser}) => {
             </View>
 
             <View style={styles.buttonsHandler}>
+                {/* запуск чата
                 <TouchableOpacity onPress={StartChat} style={styles.imageMessageContainer}>
                     <Image source={require('../../R/Images/chat.png')} style={styles.messageImage}/>
                 </TouchableOpacity>
+                */}
                 <TouchableOpacity onPress={removeCallBack} style={styles.imageMessageContainer}>
                     <Image source={require('../../R/Images/minus.png')} style={styles.messageImage}/>
                 </TouchableOpacity>
